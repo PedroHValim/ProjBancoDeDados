@@ -49,7 +49,7 @@ try:
     disciplinas_por_departamento = {
         "Ciência da Computação": [
             "Programação", "Estruturas de Dados", "Banco de Dados", "Redes de Computadores", 
-            "Inteligência Artificial", "Segurança da Informação", "Computação Gráfica"
+            "Inteligência Artificial", "Segurança da Informação"
         ],
         "Engenharia": [
             "Cálculo Diferencial e Integral", "Mecânica dos Sólidos", "Termodinâmica", 
@@ -125,19 +125,20 @@ try:
 
     # Gerando disciplinas
     for _ in range(5):
-        codigo = fake.unique.bothify(text='D###')
-        depto = random.choice(departamentos)
-        dsic = random.choice(disciplinas_por_departamento[depto])
-        semestres = random.randint(2, 4)
-        aula_teo = semestres * 15
-        aula_pra = semestres * 10
-        cursor.execute(f"insert into disciplinas values ('{codigo}', '{dsic}', '{depto}', {semestres}, {aula_teo}, {aula_pra});")
+        depto = departamentos[_]
+        for i in range(6):
+            codigo = fake.unique.bothify(text='D###')
+            dsic = disciplinas_por_departamento[depto][i]
+            semestres = random.randint(2, 4)
+            aula_teo = semestres * 15
+            aula_pra = semestres * 10
+            cursor.execute(f"insert into disciplinas values ('{codigo}', '{dsic}', '{depto}', {semestres}, {aula_teo}, {aula_pra});")
 
     # Gerando histórico escolar
     for _ in range(15):
         curso_id = random.choice(cursos_)
         hist_id = fake.unique.bothify(text='???-####')
-        semestre = random.randint(1, 4)
+        semestre = random.randint(1, 2)
         ano = random.randint(2015, 2024)
         aluno_id = random.choice(alunos)
         nota = round(random.uniform(0, 10), 1)
@@ -147,12 +148,26 @@ try:
             status = "Reprovado"
         hist_id_.append((curso_id, hist_id, semestre, ano)) 
         cursor.execute(f"insert into hist_escolar values ('{curso_id}', '{hist_id}', '{aluno_id}', {semestre}, {ano}, '{status}', {nota});")
+        if status == "Reprovado":
+            if semestre == 1:
+                cursor.execute(f"insert into hist_escolar values ('{curso_id}', '{hist_id}', '{aluno_id}', {semestre + 1}, {ano}, '{status}', {nota});")
+            elif semestre == 2:
+                cursor.execute(f"insert into hist_escolar values ('{curso_id}', '{hist_id}', '{aluno_id}', {semestre - 1}, {ano + 1}, '{status}', {nota});")
+
+    cursor.execute("commit")
+    cursor.close()
+    cursor = connection.cursor()
 
     # Gerando ensina
-    for _ in range(5):
+    for _ in range(20):
         professor_id = random.choice(professores)
-        curso_id, hist_id, semestre, ano = random.choice(hist_id_)  
-        cursor.execute(f"insert into ensina values ('{professor_id}', '{curso_id}', '{hist_id}', {semestre}, {ano});")
+        cursor.execute(f"select nome_dpt from professor where id = '{professor_id}'")
+        nome_dpt2 = cursor.fetchone()[0]
+        cursor.execute(f"select id from disciplinas where departamento = '{nome_dpt2}'")
+        id_disc = cursor.fetchone()[0]
+        semestre = random.randint(1, 2)
+        ano = random.randint(2000, 2024)
+        cursor.execute(f"insert into ensina values ('{professor_id}', '{id_disc}', {semestre}, {ano});")
 
 
     # Gerando TCCs
