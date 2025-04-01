@@ -80,7 +80,6 @@ try:
     alunos = []                                                                 
     professores = []
     cursos_ = []
-    hist_id_ = []
     tcc_id = []
 
     # Gerando departamentos
@@ -137,7 +136,6 @@ try:
     # Gerando histórico escolar
     for _ in range(15):
         curso_id = random.choice(cursos_)
-        hist_id = fake.unique.bothify(text='???-####')
         semestre = random.randint(1, 2)
         ano = random.randint(2015, 2024)
         aluno_id = random.choice(alunos)
@@ -145,14 +143,16 @@ try:
         if(nota >= 5):
             status = "Aprovado" 
         else:
-            status = "Reprovado"
-        hist_id_.append((curso_id, hist_id, semestre, ano)) 
-        cursor.execute(f"insert into hist_escolar values ('{curso_id}', '{hist_id}', '{aluno_id}', {semestre}, {ano}, '{status}', {nota});")
+            status = "Reprovado" 
+        cursor.execute(f"""insert into hist_escolar (id_curso, semestre, ano, aluno, status, nota) 
+                       values ('{curso_id}',  '{semestre}', {ano}, {aluno_id}, '{status}', {nota});""")
         if status == "Reprovado":
             if semestre == 1:
-                cursor.execute(f"insert into hist_escolar values ('{curso_id}', '{hist_id}', '{aluno_id}', {semestre + 1}, {ano}, '{status}', {nota});")
+                cursor.execute(f"""insert into hist_escolar (id_curso, semestre, ano, aluno, status, nota) 
+                       values ('{curso_id}',  '{semestre + 1}', {ano}, {aluno_id}, '{"Aprovado"}', {random.randint(5,10)});""")
             elif semestre == 2:
-                cursor.execute(f"insert into hist_escolar values ('{curso_id}', '{hist_id}', '{aluno_id}', {semestre - 1}, {ano + 1}, '{status}', {nota});")
+                cursor.execute(f"""insert into hist_escolar (id_curso, semestre, ano, aluno, status, nota) 
+                       values ('{curso_id}',  '{semestre - 1}', {ano + 1}, {aluno_id}, '{"Aprovado"}', {random.randint(5,10)});""")
 
     cursor.execute("commit")
     cursor.close()
