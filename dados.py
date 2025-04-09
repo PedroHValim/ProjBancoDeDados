@@ -42,6 +42,7 @@ try:
     cursor.execute("delete from ensina;")
     cursor.execute("delete from hist_escolar;")
     cursor.execute("delete from tccs;")
+    cursor.execute("ALTER SEQUENCE hist_escolar_id_hist_seq RESTART WITH 1")
 
 
         # Listas de valores realistas
@@ -115,7 +116,7 @@ try:
         cursor.execute(f"insert into curso values ('{codigo}', '{nome}', '{depto}','{coord2}');")
 
     # Gerando alunos
-    for _ in range(10):
+    for _ in range(30):
         id_aluno = fake.unique.random_int(min=1000, max=9999)
         alunos.append(id_aluno)
         nome = fake.name()
@@ -179,10 +180,10 @@ try:
         cursor.execute(f"insert into tccs values ('{codigo_tcc}', '{titulo}', '{professor_id}');")
 
     # Gerando TCCs-Alunos
-    for _ in range(5):
-        codigo_tcc = random.choice(tcc_id)
-        aluno_id = random.choice(alunos)
-        cursor.execute(f"insert into tccs_alunos values ('{codigo_tcc}', '{aluno_id}');")
+    for _ in tcc_id:
+        aluno_id = random.sample(alunos,4)
+        for aluno in aluno_id:
+            cursor.execute(f"insert into tccs_alunos values ('{_}', '{aluno}');")
 
     cursor.execute("commit")
 
