@@ -45,7 +45,7 @@ try:
     cursor.execute("ALTER SEQUENCE hist_escolar_id_hist_seq RESTART WITH 1")
 
 
-        # Listas de valores realistas
+    # Listas de valores realistas
     departamentos = ['Ciência da Computação', 'Engenharia',  'Matemática', 'Biologia', 'História']
     disciplinas_por_departamento = {
         "Ciência da Computação": [
@@ -71,6 +71,7 @@ try:
     }
 
     cursos = ['Ciência da Computação', 'Engenharia de Produção', 'Engenharia de Automação','Engenharia Quiímica', 'Matemática', 'História', 'Biologia']
+
     cursos_por_departamento = {
         "Ciência da Computação": ["Ciência da Computação"],
         "Engenharia": ["Engenharia de Produção", "Engenharia de Automação", "Engenharia Química"],
@@ -112,18 +113,14 @@ try:
         chefe = random.choice(professores_por_departamento[nome_dpto])
         cursor.execute(f"update departamento set chefe = '{chefe}' where nome_dpt = '{nome_dpto}' ;")
 
-
     # Gerando cursos
     for _ in range(5):
         codigo = fake.unique.bothify(text='???-###')
         cursos_.append(codigo)
         depto = departamentos[_]
         nome = random.choice(cursos_por_departamento[depto])
-        coord2 = random.choice(professores_por_departamento[_])
+        coord2 = random.choice(professores_por_departamento[depto])
         cursor.execute(f"insert into curso values ('{codigo}', '{nome}', '{depto}','{coord2}');")
-
-
-
 
     # Gerando alunos
     for _ in range(30):
