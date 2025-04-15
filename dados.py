@@ -49,15 +49,15 @@ try:
     departamentos = ['Ciência da Computação', 'Engenharia',  'Matemática', 'Biologia', 'História']
     disciplinas_por_departamento = {
         "Ciência da Computação": [
-            "Programação", "Estruturas de Dados", "Banco de Dados", "Redes de Computadores", 
+            "Programação", "Estruturas de Dados", "Banco de Dados", "Cálculo", 
             "Inteligência Artificial", "Segurança da Informação"
         ],
         "Engenharia": [
-            "Cálculo Diferencial e Integral", "Mecânica dos Sólidos", "Termodinâmica", 
+            "Cálculo", "Mecânica dos Sólidos", "Termodinâmica", 
             "Eletromagnetismo", "Desenho Técnico", "Materiais de Engenharia"
         ],
         "Matemática": [
-            "Álgebra Linear", "Cálculo Numérico", "Probabilidade e Estatística", 
+            "Álgebra Linear", "Cálculo", "Probabilidade e Estatística", 
             "Teoria dos Números", "Geometria Analítica", "Modelagem Matemática"
         ],
         "Biologia": [
@@ -78,6 +78,13 @@ try:
         "Biologia": ["Biologia"],
         "História": ["História"]
     }
+    professores_por_departamento = {
+        "Ciência da Computação": [],
+        "Engenharia": [],
+        "Matemática": [],
+        "Biologia": [],
+        "História": []
+    }
     alunos = []                                                                 
     professores = []
     cursos_ = []
@@ -90,30 +97,33 @@ try:
         cursor.execute(f"insert into departamento values ('{depto}', {num_materias});")
 
     # Gerando professores
-    for _ in range(10):
-        id_prof = fake.unique.random_int(min=1000, max=9999)
-        professores.append(id_prof)
-        nome = fake.name()
-        depto = random.choice(departamentos)
-        cursor.execute(f"insert into professor values ('{id_prof}', '{nome}', '{depto}');")
+    for i in range(5):
+        depto = departamentos[i]
+        for _ in range(2):
+            id_prof = fake.unique.random_int(min=1000, max=9999)
+            professores.append(id_prof)
+            nome = fake.name()
+            professores_por_departamento[depto].append(id_prof)
+            cursor.execute(f"insert into professor values ('{id_prof}', '{nome}', '{depto}');")
 
     #Gerando o chefe de cada departamento
-    chefes = random.sample(professores,5)
     for _ in range(5):
-        chefe = chefes[_]
         nome_dpto = departamentos[_]
+        chefe = random.choice(professores_por_departamento[nome_dpto])
         cursor.execute(f"update departamento set chefe = '{chefe}' where nome_dpt = '{nome_dpto}' ;")
 
 
     # Gerando cursos
-    coord = random.sample(professores,5)
     for _ in range(5):
         codigo = fake.unique.bothify(text='???-###')
         cursos_.append(codigo)
-        depto = random.choice(departamentos)
+        depto = departamentos[_]
         nome = random.choice(cursos_por_departamento[depto])
-        coord2 = coord[_]
+        coord2 = random.choice(professores_por_departamento[_])
         cursor.execute(f"insert into curso values ('{codigo}', '{nome}', '{depto}','{coord2}');")
+
+
+
 
     # Gerando alunos
     for _ in range(30):
