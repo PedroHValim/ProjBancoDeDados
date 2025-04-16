@@ -144,39 +144,46 @@ try:
 
     # Gerando histórico escolar
     historico_temp = []
-
-    for _ in range(50):
+    for _ in range(70):
         aluno_id = random.choice(alunos)
         cursor.execute("select nome_dpt from alunos where id = %s", (str(aluno_id),))
         dpto = cursor.fetchone()[0]
         nome_disc = random.choice(disciplinas_por_departamento[dpto])
         cursor.execute("select id from disciplinas where nome_disc = %s", (nome_disc,))
         id_disc = cursor.fetchone()[0]
-        semestre = random.randint(1, 2)
-        ano = random.randint(2015, 2024)
-        nota = round(random.uniform(0, 10), 1)
-        if nota >= 5:
-            status = "Aprovado"
-        else:
-            status = "Reprovado"
-        cursor.execute(f"""insert into hist_escolar (id_disc, semestre, ano, aluno, status, nota) 
-                        values ('{id_disc}',{semestre} , {ano}, '{aluno_id}', '{status}', {nota});""")
-        
-        historico_temp.append((id_disc, semestre, ano, dpto))  # Guardamos para gerar o ensina depois
 
-        if status == "Reprovado":
-            if semestre == 1:
-                novo_sem = 2
-                novo_ano = ano
+        cursor.execute("""
+        SELECT 1 FROM hist_escolar
+        WHERE aluno = %s AND id_disc = %s AND status = 'Aprovado'
+        """, (str(aluno_id), id_disc))
+        ja_aprovado = cursor.fetchone()
+
+        if not ja_aprovado:
+            semestre = random.randint(1, 2)
+            ano = random.randint(2015, 2024)
+            nota = round(random.uniform(0, 10), 1)
+            if nota >= 5:
+                status = "Aprovado"
             else:
-                novo_sem = 1
-                novo_ano = ano + 1
-            nova_nota = random.randint(5, 10)
-            cursor.execute(
-                f"""INSERT INTO hist_escolar (id_disc, semestre, ano, aluno, status, nota) 
-                VALUES ('{id_disc}',{novo_sem} , {novo_ano}, '{aluno_id}', '{"Aprovado"}', {nova_nota});""")
+                status = "Reprovado"
+            cursor.execute(f"""insert into hist_escolar (id_disc, semestre, ano, aluno, status, nota) 
+                            values ('{id_disc}',{semestre} , {ano}, '{aluno_id}', '{status}', {nota});""")
             
-            historico_temp.append((id_disc, novo_sem, novo_ano, dpto))
+            historico_temp.append((id_disc, semestre, ano, dpto)) 
+
+            if status == "Reprovado":
+                if semestre == 1:
+                    novo_sem = 2
+                    novo_ano = ano
+                else:
+                    novo_sem = 1
+                    novo_ano = ano + 1
+                nova_nota = random.randint(5, 10)
+                cursor.execute(
+                    f"""INSERT INTO hist_escolar (id_disc, semestre, ano, aluno, status, nota) 
+                    VALUES ('{id_disc}',{novo_sem} , {novo_ano}, '{aluno_id}', '{"Aprovado"}', {nova_nota});""")
+                
+                historico_temp.append((id_disc, novo_sem, novo_ano, dpto))
 
 
     cursor.execute("commit")
