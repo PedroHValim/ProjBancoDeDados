@@ -56,7 +56,7 @@ A tabela alunos armazena os estudantes da instituição. Cada aluno:
 
 * Está associado a um departamento.
 
-* Pode estar matriculado em diversas disciplinas ao longo dos semestres.
+* Cursa apenas um curso no momento, não sendo possível cursar mais de 1 curso diferente no mesmo momento.
 
 ### 6. Histórico Escolar
 A tabela hist_escolar registra as disciplinas cursadas pelos alunos. Ela funciona como um diário acadêmico, indicando:
