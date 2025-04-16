@@ -1,0 +1,112 @@
+-- Remover tabelas existentes
+DROP TABLE IF EXISTS tccs_alunos CASCADE ;
+DROP TABLE IF EXISTS tccs CASCADE ;
+DROP TABLE IF EXISTS ensina CASCADE ;
+DROP TABLE IF EXISTS hist_escolar CASCADE ;
+DROP TABLE IF EXISTS alunos CASCADE ;
+DROP TABLE IF EXISTS disciplinas CASCADE ;
+DROP TABLE IF EXISTS curso CASCADE ;
+DROP TABLE IF EXISTS professor CASCADE;
+DROP TABLE IF EXISTS departamento CASCADE ;
+
+-- Criar tabelas novamente
+create table departamento (
+    Nome_dpt    varchar(50), 
+    Materias    int,
+    Chefe       varchar(5),
+    primary key (Nome_dpt)
+);
+
+create table curso (
+    Id_curso        varchar(8), 
+    Nome_curso      varchar(50), 
+    Nome_dpt        varchar(50),
+    Coordenador     varchar(5),
+    primary key (Id_curso),
+    foreign key (Nome_dpt) references departamento (Nome_dpt) 
+        on delete set null
+);
+
+create table professor (
+    ID              varchar(10), 
+    nome            varchar(50) not null, 
+    Nome_dpt        varchar(50),
+    primary key (ID),
+    foreign key (Nome_dpt) references departamento (Nome_dpt) 
+        on delete set null
+);
+
+ALTER TABLE departamento
+ADD CONSTRAINT chefe_fk FOREIGN KEY (Chefe)
+REFERENCES professor(ID)
+ON DELETE CASCADE;
+
+ALTER TABLE curso
+ADD CONSTRAINT coordenador_fk FOREIGN KEY (Coordenador)
+REFERENCES professor(ID)
+ON DELETE CASCADE;
+
+create table disciplinas (
+    ID              varchar(5),
+    Nome_disc       varchar(50),
+    Departamento    varchar(50),
+    Semestres       int,
+    Aula_Teo        int,
+    Aula_Pra        int,
+    primary key(ID),
+    foreign key (Departamento) references departamento (Nome_dpt) 
+        on delete set null
+);
+
+create table alunos (
+    ID              varchar(5), 
+    nome            varchar(50) not null, 
+    Nome_dpt        varchar(50),
+    Id_curso      varchar(50),
+    primary key (ID),
+    foreign key (Nome_dpt) references departamento (Nome_dpt),
+    foreign key (Id_curso) references curso(Id_curso)
+        on delete cascade
+);
+
+create table hist_escolar (
+    Id_disc         varchar(8), 
+    ID_hist         serial not null,    
+    Aluno           varchar(5),
+    semestre        int,
+    ano             numeric(4,0) check (ano > 1701 and ano < 2100), 
+    status          varchar(10),
+    nota            float,
+    primary key (Id_disc, ID_hist, semestre, ano),
+    foreign key (Id_disc) references disciplinas (ID), 
+    foreign key (Aluno) references alunos (ID)
+        on delete cascade
+);
+
+create table ensina (
+    ID              varchar(5), 
+    Id_disc        varchar(30),
+    semestre        int,
+    ano             numeric(4,0),
+    primary key (ID, Id_disc,  semestre, ano),
+    foreign key (Id_disc) references disciplinas (ID) 
+        on delete cascade,
+    foreign key (ID) references professor (ID) 
+        on delete cascade
+);
+
+create table tccs (
+    ID              varchar(5),
+    Titulo          varchar(50),
+    Orientador      varchar(50),
+    primary key (ID)
+);
+
+create table tccs_alunos (
+    ID_tcc          varchar(5),
+    ID_aluno        varchar(5),
+    primary key (ID_tcc, ID_aluno),
+    foreign key (ID_tcc) references tccs (ID),
+    foreign key (ID_aluno) references alunos (ID)
+        on delete set null
+);

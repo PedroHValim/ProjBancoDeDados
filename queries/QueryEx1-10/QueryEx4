@@ -1,0 +1,5 @@
+select a.id, a.nome
+from hist_escolar h 
+join alunos a on a.id = h.aluno
+join ensina e on e.id_disc = h.id_disc and e.ano = h.ano and e.semestre = h.semestre
+where e.id = '2769' /*aqui é necessário mudar o id do professor de acordo com o banco de daods*/

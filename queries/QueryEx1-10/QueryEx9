@@ -1,0 +1,5 @@
+SELECT c.nome_curso, COUNT(a.id) AS total_alunos
+FROM alunos a
+JOIN curso c ON a.id_curso = c.id_curso
+GROUP BY c.nome_curso
+ORDER BY c.nome_curso;

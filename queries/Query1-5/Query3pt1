@@ -1,0 +1,8 @@
+SELECT 
+    c.Nome_curso,
+    d.ID AS codigo_disciplina,
+    d.Nome_disc AS nome_disciplina
+FROM curso c
+JOIN disciplinas d 
+    ON c.Nome_dpt = d.Departamento
+WHERE c.Nome_curso = 'Ciência da Computação';

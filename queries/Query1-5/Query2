@@ -1,0 +1,11 @@
+SELECT 
+    t.id AS tcc_id,
+    t.titulo,   
+    p.nome AS nome_orientador,
+    a.id AS aluno_id,
+    a.nome AS nome_aluno
+FROM tccs t
+JOIN professor p ON t.orientador = p.id
+JOIN tccs_alunos ta ON t.id = ta.id_tcc
+JOIN alunos a ON ta.id_aluno = a.id
+ORDER BY t.id, a.nome;

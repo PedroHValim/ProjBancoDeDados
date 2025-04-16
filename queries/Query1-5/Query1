@@ -1,0 +1,16 @@
+WITH reprovados AS (
+    SELECT * FROM hist_escolar WHERE status ILIKE 'Reprovado'
+), 
+aprovados AS (
+    SELECT h.* 
+    FROM hist_escolar h
+    JOIN reprovados r
+    ON h.status ILIKE 'Aprovado' 
+    AND h.aluno = r.aluno 
+    AND h.id_disc = r.id_disc
+)
+
+SELECT * FROM reprovados
+UNION ALL
+SELECT * FROM aprovados
+ORDER BY aluno, id_disc, ano, semestre;

@@ -1,0 +1,5 @@
+select d.id, d.nome_disc 
+from ensina e 
+join disciplinas d on d.id = e.id_disc
+group by d.id, d.nome_disc
+HAVING COUNT(DISTINCT e.id || '-' || e.semestre || '-' || e.ano) > 1;

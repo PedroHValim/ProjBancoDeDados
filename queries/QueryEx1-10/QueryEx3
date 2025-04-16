@@ -1,0 +1,5 @@
+SELECT a.nome
+FROM hist_escolar h
+JOIN alunos a ON a.id = h.aluno
+JOIN disciplinas d ON d.id = h.id_disc
+WHERE d.nome_disc = 'Banco de Dados';

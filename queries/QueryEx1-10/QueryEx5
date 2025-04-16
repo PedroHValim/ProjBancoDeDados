@@ -1,0 +1,5 @@
+select distinct a.id, a.nome 
+from hist_escolar h
+join alunos a on a.id = h.aluno
+join disciplinas d on d.id = h.id_disc
+where d.departamento = 'Matemática'
