@@ -129,7 +129,10 @@ try:
         alunos.append(id_aluno)
         nome = fake.name()
         depto = random.choice(departamentos)
-        cursor.execute(f"insert into alunos values ('{id_aluno}', '{nome}', '{depto}');")
+        nome_curso = random.choice(cursos_por_departamento[depto])
+        cursor.execute("select id_curso from curso where nome_curso = %s", (nome_curso,))
+        id_curso = cursor.fetchone()[0]
+        cursor.execute(f"insert into alunos values ('{id_aluno}', '{nome}', '{depto}','{id_curso}');")
 
     # Gerando disciplinas
     for _ in range(5):
