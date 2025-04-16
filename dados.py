@@ -100,7 +100,7 @@ try:
     # Gerando professores
     for i in range(5):
         depto = departamentos[i]
-        for _ in range(2):
+        for _ in range(3):
             id_prof = fake.unique.random_int(min=1000, max=9999)
             professores.append(id_prof)
             nome = fake.name()
@@ -114,13 +114,14 @@ try:
         cursor.execute(f"update departamento set chefe = '{chefe}' where nome_dpt = '{nome_dpto}' ;")
 
     # Gerando cursos
-    for _ in range(5):
-        codigo = fake.unique.bothify(text='???-###')
-        cursos_.append(codigo)
-        depto = departamentos[_]
-        nome = random.choice(cursos_por_departamento[depto])
-        coord2 = random.choice(professores_por_departamento[depto])
-        cursor.execute(f"insert into curso values ('{codigo}', '{nome}', '{depto}','{coord2}');")
+    for depto, cursos in cursos_por_departamento.items():
+        professores = professores_por_departamento[depto]
+        for nome, coord2 in zip(cursos, professores): #desta forma é possível termos um professor especifico do dpto para cada curso
+            codigo = fake.unique.bothify(text='???-###')
+            cursos_.append(codigo)
+            cursor.execute(f"insert into curso values ('{codigo}', '{nome}', '{depto}', '{coord2}');")
+
+
 
     # Gerando alunos
     for _ in range(30):
@@ -167,7 +168,7 @@ try:
     cursor = connection.cursor()
 
     # Gerando ensina
-    for _ in range(20):
+    for _ in range(10):
         professor_id = random.choice(professores)
         cursor.execute(f"select nome_dpt from professor where id = '{professor_id}'")
         nome_dpt2 = cursor.fetchone()[0]
