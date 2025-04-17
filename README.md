@@ -93,3 +93,33 @@ A tabela tccs_alunos representa a associação entre TCCs e seus autores. Permit
 * Trabalhos com um ou mais alunos.
 
 * Registro de trabalhos em grupo caso mais de um aluno tenha o TCC com mesmo ID.
+
+## Execução 
+
+Primeiro, utilize o arquivo ddl.sql para criar as tabelas no banco de dados. Em seguida, execute o script dados.py para gerar dados para o banco com os dados, preenchendo previamente o arquivo info.env com suas variáveis de acesso. Após essa etapa, você pode utilizar livremente as demais queries disponíveis.
+
+## Queries SQL
+
+1. Histórico escolar com reprovações e aprovações subsequentes
+Apresenta todas as tentativas do aluno em uma determinada disciplina, incluindo eventuais reprovações e a aprovação obtida posteriormente.
+
+2. Trabalhos de Conclusão de Curso (TCC) orientados por um professor
+Lista todos os projetos de TCC supervisionados por um professor, juntamente com os nomes dos alunos responsáveis por cada trabalho.
+
+3. Comparação de matrizes curriculares entre dois cursos com disciplinas em comum
+Foram realizadas duas consultas, uma para cada curso (por exemplo, Ciência da Computação e Ciência de Dados), listando todas as disciplinas de cada um e permitindo identificar aquelas que são compartilhadas entre ambos.
+
+4. Disciplinas cursadas por um aluno com os respectivos professores
+Apresenta os nomes e códigos das disciplinas que um aluno cursou, acompanhados dos nomes dos professores responsáveis por cada uma delas.
+
+5. Chefes de departamento e coordenadores de curso
+Exibe os nomes dos professores, juntamente com o nome do departamento que chefiam e o curso que coordenam. 
+  
+## Modelos
+
+![image](https://github.com/user-attachments/assets/e4e13590-af44-4960-9765-cc7396589aeb)
+
+![image](https://github.com/user-attachments/assets/ff34a8a2-5fdf-4815-9bbf-8ffb56d278ae)
+
+
+
